@@ -1,7 +1,10 @@
 package mal
 
 modules = Main
+        , Reader
         , step0_repl
+        , step1_read_print
 
 executable = mal
 main = Main
+pkgs = lightyear

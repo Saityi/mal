@@ -4,8 +4,7 @@ SRCS = step0_repl.idr step1_read_print.idr step2_eval.idr step3_env.idr \
 OTHER_SRCS = Main.idr 
 BINS = $(SRCS:%.idr=%)
 
-all: 
-	mal
+all: mal
 
 $(BINS): %: %.idr $(OTHER_SRCS)
 	idris Main.idr $< -o $@
