@@ -43,7 +43,7 @@ malNil : Parser MalSexp
 malNil = token "nil" $> MalNil
 
 malBool : Parser MalSexp
-malBool = token "true" $> MalBool True <|> 
+malBool = token "true" $> MalBool True <|>| 
           token "false" $> MalBool False
 
 malInt : Parser MalSexp
@@ -53,27 +53,23 @@ malWhitespace : Parser Char
 malWhitespace = char ',' <|>| space
 
 malSym : Parser MalSexp
-malSym = MalSym . pack <$> manyTill (oneOf validChars) ((skip malWhitespace) <|> eof)
-    where validChars : String
-          validChars = pack (with List ['a'..'z'] ++ ['A'..'Z'] ++ ['0'..'9']) ++ "+-*_=&^%$#@!~`:'/?<>"
+malSym = MalSym . pack <$> some (satisfy (\c => c `elem` validChars))
+    where validChars : List Char
+          validChars = (with List (['a'..'z'] ++ ['A'..'Z'] ++ ['0'..'9'] ++ (unpack "+-*_=&^%$#@!~`:'/?<>")))
 
 mutual
     export
     malExpr : Parser MalSexp
-    malExpr = do 
-        skip . opt $ many malWhitespace 
-        expr <- malExpr'
-        skip . opt $ many malWhitespace
-        pure expr
+    malExpr = (opt . many $ malWhitespace) *> malExpr' <* (opt . many $ malWhitespace)
 
     malExpr' : Parser MalSexp
     malExpr' = (malNil <?> "nil")
            <|>| (malBool <?> "bool")
+           <|>| (malSym <?> "symbol")
            <|>| (malInt  <?> "int")
-           <|>| malSym
            <|>| (malList <?> "list")
            <|>| (malVec  <?> "vec")
-           <|> (malMap  <?> "map")
+           <|>| (malMap  <?> "map")
 
     malList : Parser MalSexp
     malList = MalList <$> between (char '(') (char ')') (many malExpr)
@@ -86,7 +82,7 @@ mutual
         where kvParser : Parser (MalSexp, MalSexp)
               kvParser = do
                 key <- malExpr
-                (skip (many malWhitespace))
+                skip . opt $ many malWhitespace
                 value <- malExpr
                 pure $ (key, value)
 
