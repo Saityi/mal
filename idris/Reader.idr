@@ -27,7 +27,7 @@ Show MalSexp where
     show (MalBool False) = "false"
     show (MalInt i) = show i
     show (MalSym s) = s
-    show (MalString s) = s
+    show (MalString s) = show s
     show (MalKeyword s) = s
     show (MalList sexps) = "(" ++ unwords (map show sexps) ++ ")"
     show (MalVector sexps)  = "[" ++ unwords (map show sexps) ++ "]"
@@ -52,10 +52,17 @@ malInt = MalInt <$> integer
 malWhitespace : Parser Char
 malWhitespace = char ',' <|>| space
 
+validChars : List Char
+validChars = (with List (['a'..'z'] ++ ['A'..'Z'] ++ ['0'..'9'] ++ (unpack "+-*_=&^%$#@!~`:'/?<>")))
+
 malSym : Parser MalSexp
 malSym = MalSym . pack <$> some (satisfy (\c => c `elem` validChars))
-    where validChars : List Char
-          validChars = (with List (['a'..'z'] ++ ['A'..'Z'] ++ ['0'..'9'] ++ (unpack "+-*_=&^%$#@!~`:'/?<>")))
+
+malString : Parser MalSexp
+malString = MalString . pack <$> between (char '"') (char '"') (many (satisfy (\c => c `elem` (validChars ++ (unpack " (){}[].,\\|;")))))
+
+malComment : Parser ()
+malComment = char ';' *> (skip . many $ anyChar) <* endOfLine
 
 mutual
     export
@@ -63,9 +70,10 @@ mutual
     malExpr = (opt . many $ malWhitespace) *> malExpr' <* (opt . many $ malWhitespace)
 
     malExpr' : Parser MalSexp
-    malExpr' = (malNil <?> "nil")
+    malExpr' = (skip . opt $ malComment) *> (malNil <?> "nil")
            <|>| (malBool <?> "bool")
            <|>| (malSym <?> "symbol")
+           <|>| (malString <?> "string")
            <|>| (malInt  <?> "int")
            <|>| (malList <?> "list")
            <|>| (malVec  <?> "vec")
