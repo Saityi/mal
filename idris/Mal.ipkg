@@ -1,7 +1,9 @@
 package mal
 
 modules = Main
+        , Printer
         , Reader
+        , Types
         , step0_repl
         , step1_read_print
 

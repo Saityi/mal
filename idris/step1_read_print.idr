@@ -1,16 +1,17 @@
 module step1_read_print
-import Reader
-import Lightyear.Strings
+import Reader as R
+import Printer as P
+import Types
 
 read : String -> Either String MalSexp
-read v = parse malExpr v
+read = R.readString
 
 eval : t -> t
 eval v = v
 
 %hide print
 print : Either String MalSexp -> Either String String
-print v = map show v
+print = map P.printMalSexp
 
 rep : String -> Either String String
 rep = print . eval . read

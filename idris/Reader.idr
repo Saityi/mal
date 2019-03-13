@@ -3,42 +3,10 @@ import Lightyear.Core
 import Lightyear.Char
 import Lightyear.Strings
 import Lightyear.Combinators
-
-export
-data MalSexp = MalNil
-             | MalBool Bool
-             | MalInt Integer
-             | MalSym String
-             | MalString String
-             | MalKeyword String
-             | MalList (List MalSexp)
-             | MalVector (List MalSexp)
-             | MalMap (List (MalSexp, MalSexp))
-
-intercalate : String -> List String -> String
-intercalate sep [] = ""
-intercalate sep [s] = s
-intercalate sep (s :: ss) = s ++ sep ++ (intercalate sep ss)
-
-export
-Show MalSexp where
-    show MalNil = "nil"
-    show (MalBool True) = "true"
-    show (MalBool False) = "false"
-    show (MalInt i) = show i
-    show (MalSym s) = s
-    show (MalString s) = show s
-    show (MalKeyword s) = s
-    show (MalList sexps) = "(" ++ unwords (map show sexps) ++ ")"
-    show (MalVector sexps)  = "[" ++ unwords (map show sexps) ++ "]"
-    show (MalMap sexps)  = 
-        "{" ++ intercalate ", " [show k ++ " " ++ show v | (k, v) <- sexps] ++ "}"
+import Types
 
 infixl 4 $>
-($>) : Functor f => f a -> b -> f b
-($>) = flip (map . const)
 
--- TODO: Whitespace is handled horribly throughout
 malNil : Parser MalSexp
 malNil = token "nil" $> MalNil
 
@@ -65,12 +33,11 @@ malComment : Parser ()
 malComment = char ';' *> (skip . many $ anyChar) <* endOfLine
 
 mutual
-    export
     malExpr : Parser MalSexp
-    malExpr = (opt . many $ malWhitespace) *> malExpr' <* (opt . many $ malWhitespace)
+    malExpr = (opt . many $ malWhitespace) *> malExprI <* (opt . many $ malWhitespace)
 
-    malExpr' : Parser MalSexp
-    malExpr' = (skip . opt $ malComment) *> (malNil <?> "nil")
+    malExprI : Parser MalSexp
+    malExprI = (opt $ malComment) *> (malNil <?> "nil")
            <|>| (malBool <?> "bool")
            <|>| (malSym <?> "symbol")
            <|>| (malString <?> "string")
@@ -95,7 +62,5 @@ mutual
                 pure $ (key, value)
 
 export
-test : IO ()
-test = case parse malExpr "[1 2 {4 5 6 7}]" of
-    Left err => putStrLn err
-    Right q  => print $ show q
+readString : String -> Either String MalSexp
+readString s = parse malExpr s
