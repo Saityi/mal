@@ -1,11 +1,5 @@
 module Types
 
-infixl 4 $>
-
-public export
-($>) : Functor f => f a -> b -> f b
-($>) = flip (map . const)
-
 public export
 data MalSexp = MalNil
              | MalBool Bool
@@ -31,7 +25,7 @@ Show MalSexp where
     show (MalSym s) = s
     show (MalString s) = show s
     show (MalKeyword s) = s
-    show (MalList sexps) = "(" ++ unwords (map show sexps) ++ ")"
-    show (MalVector sexps)  = "[" ++ unwords (map show sexps) ++ "]"
-    show (MalMap sexps)  = 
+    show (MalList sexps) = assert_total $ "(" ++ unwords (map show sexps) ++ ")"
+    show (MalVector sexps)  = assert_total $ "[" ++ unwords (map show sexps) ++ "]"
+    show (MalMap sexps)  = assert_total $
         "{" ++ intercalate ", " [show k ++ " " ++ show v | (k, v) <- sexps] ++ "}"

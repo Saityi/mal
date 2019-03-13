@@ -1,11 +1,17 @@
 module Reader
-import Lightyear.Core
+
 import Lightyear.Char
-import Lightyear.Strings
 import Lightyear.Combinators
+import Lightyear.Core
+import Lightyear.Strings
+
 import Types
 
+%default partial
+
 infixl 4 $>
+($>) : Functor f => f a -> b -> f b
+($>) = flip (map . const)
 
 malNil : Parser MalSexp
 malNil = token "nil" $> MalNil
@@ -63,4 +69,5 @@ mutual
 
 export
 readString : String -> Either String MalSexp
-readString s = parse malExpr s
+readString s = assert_total $ parse malExpr s
+-- TODO: Remove assert_total ?

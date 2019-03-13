@@ -1,6 +1,7 @@
 module step1_read_print
-import Reader as R
+
 import Printer as P
+import Reader as R
 import Types
 
 read : String -> Either String MalSexp
@@ -27,4 +28,5 @@ repl = do
             case (rep input) of
                 Left err => putStrLn err
                 Right eval'd => putStrLn eval'd
-            repl
+            assert_total repl
+            -- TODO: Remove assert_total?

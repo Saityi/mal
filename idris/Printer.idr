@@ -1,4 +1,5 @@
 module Printer
+
 import Types
 
 export
