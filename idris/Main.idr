@@ -1,6 +1,6 @@
 module Main
 import Reader
-import step0_repl
+import step1_read_print
 
 main : IO ()
-main = test
+main = repl

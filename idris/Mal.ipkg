@@ -8,3 +8,4 @@ modules = Main
 executable = mal
 main = Main
 pkgs = lightyear
+opts = "-i ../../lightyear"

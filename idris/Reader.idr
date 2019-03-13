@@ -4,6 +4,7 @@ import Lightyear.Char
 import Lightyear.Strings
 import Lightyear.Combinators
 
+export
 data MalSexp = MalNil
              | MalBool Bool
              | MalInt Integer
@@ -13,11 +14,13 @@ data MalSexp = MalNil
              | MalList (List MalSexp)
              | MalVector (List MalSexp)
              | MalMap (List (MalSexp, MalSexp))
+
 intercalate : String -> List String -> String
 intercalate sep [] = ""
 intercalate sep [s] = s
 intercalate sep (s :: ss) = s ++ sep ++ (intercalate sep ss)
 
+export
 Show MalSexp where
     show MalNil = "nil"
     show (MalBool True) = "true"
@@ -26,8 +29,8 @@ Show MalSexp where
     show (MalSym s) = s
     show (MalString s) = s
     show (MalKeyword s) = s
-    show (MalList sexps) = "(" ++ intercalate ", " (map show sexps) ++ ")"
-    show (MalVector sexps)  = "[" ++ intercalate ", " (map show sexps) ++ "]"
+    show (MalList sexps) = "(" ++ unwords (map show sexps) ++ ")"
+    show (MalVector sexps)  = "[" ++ unwords (map show sexps) ++ "]"
     show (MalMap sexps)  = 
         "{" ++ intercalate ", " [show k ++ " " ++ show v | (k, v) <- sexps] ++ "}"
 
@@ -46,47 +49,49 @@ malBool = token "true" $> MalBool True <|>
 malInt : Parser MalSexp
 malInt = MalInt <$> integer
 
-commas : Parser ()
-commas = skip (many (char ','))
-
 malWhitespace : Parser Char
-malWhitespace = char ',' <|> space
+malWhitespace = char ',' <|>| space
 
-mutual 
-    malValue : Parser MalSexp
-    malValue = (malNil <?> "nil")
+malSym : Parser MalSexp
+malSym = MalSym . pack <$> manyTill (oneOf validChars) ((skip malWhitespace) <|> eof)
+    where validChars : String
+          validChars = pack (with List ['a'..'z'] ++ ['A'..'Z'] ++ ['0'..'9']) ++ "+-*_=&^%$#@!~`:'/?<>"
+
+mutual
+    export
+    malExpr : Parser MalSexp
+    malExpr = do 
+        skip . opt $ many malWhitespace 
+        expr <- malExpr'
+        skip . opt $ many malWhitespace
+        pure expr
+
+    malExpr' : Parser MalSexp
+    malExpr' = (malNil <?> "nil")
            <|>| (malBool <?> "bool")
            <|>| (malInt  <?> "int")
+           <|>| malSym
            <|>| (malList <?> "list")
            <|>| (malVec  <?> "vec")
-           <|>| (malMap  <?> "map")
-
-    malColl : (t -> MalSexp) -> Char -> Parser t -> Char -> Parser MalSexp
-    malColl ctor start itemsParser end = do
-        char start
-        spaces
-        items <- itemsParser
-        spaces
-        char end
-        pure $ ctor items
+           <|> (malMap  <?> "map")
 
     malList : Parser MalSexp
-    malList = malColl MalList '(' (malValue `sepBy` malWhitespace) ')'
+    malList = MalList <$> between (char '(') (char ')') (many malExpr)
 
     malVec : Parser MalSexp
-    malVec = malColl MalVector '[' (malValue `sepBy` malWhitespace) ']'
+    malVec = MalVector <$> between (char '[') (char ']') (many malExpr)
 
     malMap : Parser MalSexp
-    malMap = malColl MalMap '{' (kvParser `sepBy` malWhitespace) '}'
+    malMap = MalMap <$> between (char '{') (char '}') (many kvParser)
         where kvParser : Parser (MalSexp, MalSexp)
               kvParser = do
-                key <- malValue
-                space
-                value <- malValue
+                key <- malExpr
+                (skip (many malWhitespace))
+                value <- malExpr
                 pure $ (key, value)
 
 export
 test : IO ()
-test = case parse malValue "[1 2 {4 5 6 7}]" of
+test = case parse malExpr "[1 2 {4 5 6 7}]" of
     Left err => putStrLn err
-    Right q  => putStrLn $ show q
+    Right q  => print $ show q

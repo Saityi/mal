@@ -1,23 +1,29 @@
 module step1_read_print
+import Reader
+import Lightyear.Strings
 
-read : t -> t
-read v = v
+read : String -> Either String MalSexp
+read v = parse malExpr v
 
 eval : t -> t
 eval v = v
 
-print : t -> t
-print v = v
+%hide print
+print : Either String MalSexp -> Either String String
+print v = map show v
 
-rep : t -> t
+rep : String -> Either String String
 rep = print . eval . read
 
+%hide repl
 export
-repl' : IO ()
-repl' = do
+repl : IO ()
+repl = do
     putStr "user> "
     eof <- fEOF stdin
     if eof then pure ()
     else do input <- getLine
-            putStrLn $ rep input
-            repl'
+            case (rep input) of
+                Left err => putStrLn err
+                Right eval'd => putStrLn eval'd
+            repl
