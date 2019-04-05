@@ -1,5 +1,5 @@
 module Main
-import step1_read_print
+import step2_eval
 
 main : IO ()
 main = repl

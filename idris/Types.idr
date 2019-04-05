@@ -6,7 +6,7 @@ public export
 data MalSexp : Type where
     MalNil : MalSexp
     MalBool : Bool -> MalSexp
-    MalInt : Integer -> MalSexp
+    MalInt : Int -> MalSexp
     MalSym : String -> MalSexp
     MalString : String -> MalSexp
     MalKeyword : String -> MalSexp
@@ -15,11 +15,7 @@ data MalSexp : Type where
     MalMap : (List (MalSexp, MalSexp)) -> MalSexp
 
 export
-Environment : Type
-Environment = List (String, Int -> Int -> Int)
-
-export
-envLookup : Environment -> String -> Maybe (Int -> Int -> Int)
+envLookup : List (String, Int -> Int -> Int) -> String -> Maybe (Int -> Int -> Int)
 envLookup env s = lookup s env
 
 mutual

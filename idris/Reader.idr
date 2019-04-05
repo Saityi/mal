@@ -41,9 +41,9 @@ mutual
     malExprI : Parser MalSexp
     malExprI = (opt $ malComment) *> (malNil <?> "nil")
            <|>| (malBool <?> "bool")
+           <|>| (malInt  <?> "int")
            <|>| (malSym <?> "symbol")
            <|>| (malString <?> "string")
-           <|>| (malInt  <?> "int")
            <|>| (malList <?> "list")
            <|>| (malVec  <?> "vec")
            <|>| (malMap  <?> "map")
