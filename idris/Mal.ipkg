@@ -9,5 +9,5 @@ modules = Main
 
 executable = mal
 main = Main
-pkgs = contrib
-opts = "--total"
+pkgs = lightyear
+opts = "--total -i ../../lightyear"
