@@ -8,9 +8,6 @@ import Lightyear.Strings
 import Types
 
 %default partial
-infixl 4 $>
-($>) : Functor f => f a -> b -> f b
-($>) = flip (map . const)
 
 malNil : Parser MalSexp
 malNil = token "nil" *> pure MalNil
