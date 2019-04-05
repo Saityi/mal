@@ -6,6 +6,7 @@ modules = Main
         , Types
         , step0_repl
         , step1_read_print
+				, step2_eval
 
 executable = mal
 main = Main
