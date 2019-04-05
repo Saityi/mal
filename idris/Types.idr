@@ -34,15 +34,17 @@ mutual
   showColl start end sexps = showColl' "" sexps where
     showColl' : String -> List MalSexp -> String
     showColl' acc [] = start ++ acc ++ end
+    showColl' "" (x :: xs) = showColl' (showMut x) xs
     showColl' acc (x :: xs) = showColl' (acc ++ " " ++ showMut x) xs
 
   showMap : List (MalSexp, MalSexp) -> String
   showMap sexps = (showMap' "" sexps) where
     showkv : MalSexp -> MalSexp -> String
-    showkv s1 s2 = (showMut s1) ++ ", " ++ (showMut s2)
+    showkv s1 s2 = (showMut s1) ++ " " ++ (showMut s2)
 
     showMap' : String -> List (MalSexp, MalSexp) -> String
     showMap' acc [] = "{" ++ acc ++ "}"
+    showMap' "" ((x, y) :: xys) = showMap' (showkv x y) xys
     showMap' acc ((x, y) :: xys) = showMap' (acc ++ " " ++ (showkv x y)) xys
 
 
