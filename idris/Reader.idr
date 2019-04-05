@@ -8,17 +8,16 @@ import Lightyear.Strings
 import Types
 
 %default partial
-
 infixl 4 $>
 ($>) : Functor f => f a -> b -> f b
 ($>) = flip (map . const)
 
 malNil : Parser MalSexp
-malNil = token "nil" $> MalNil
+malNil = token "nil" *> pure MalNil
 
 malBool : Parser MalSexp
-malBool = token "true" $> MalBool True <|>| 
-          token "false" $> MalBool False
+malBool = (token "true" *> (pure $ MalBool True)) <|>| 
+          (token "false" *> (pure $ MalBool False))
 
 malInt : Parser MalSexp
 malInt = MalInt <$> integer

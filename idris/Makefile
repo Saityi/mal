@@ -5,7 +5,7 @@ BINS = $(SRCS:%.idr=%)
 all: mal
 
 $(BINS): %: %.idr $(OTHER_SRCS)
-	idris -i ../../lightyear Main.idr $< -o $@
+	idris -p lightyear Main.idr $< -o $@
 
 mal: $(SRCS)
 	idris --build Mal.ipkg

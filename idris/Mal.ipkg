@@ -10,4 +10,4 @@ modules = Main
 executable = mal
 main = Main
 pkgs = lightyear
-opts = "--total -i ../../lightyear"
+opts = "--total"
