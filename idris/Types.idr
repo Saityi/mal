@@ -14,8 +14,12 @@ data MalSexp : Type where
     MalVector : (List MalSexp) -> MalSexp
     MalMap : (List (MalSexp, MalSexp)) -> MalSexp
 
+public export
+Environment : Type
+Environment = List (String, Int -> Int -> Int)
+
 export
-envLookup : List (String, Int -> Int -> Int) -> String -> Maybe (Int -> Int -> Int)
+envLookup : Environment -> String -> Maybe (Int -> Int -> Int)
 envLookup env s = lookup s env
 
 mutual

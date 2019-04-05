@@ -10,7 +10,7 @@ read : String -> Either String MalSexp
 read = R.readString
 
 partial
-eval : List (String, Int -> Int -> Int) -> MalSexp -> Either String MalSexp
+eval : Environment -> MalSexp -> Either String MalSexp
 eval env (MalList ((MalSym s) :: args)) = case (envLookup env s) of
   Just sym => case args of
     (MalInt i :: MalInt j :: []) => Right . MalInt $ (sym i j)
@@ -32,7 +32,7 @@ print : MalSexp -> Either String String
 print = pure . P.prStr
 
 partial
-defaultEnv : List (String, (Int -> Int -> Int))
+defaultEnv : Environment
 defaultEnv = [ ("+", (+))
              , ("*", (*))
              , ("-", (-))
