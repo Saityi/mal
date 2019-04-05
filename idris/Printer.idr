@@ -3,5 +3,5 @@ module Printer
 import Types
 
 export
-printMalSexp : MalSexp -> String
-printMalSexp = show
+prStr : MalSexp -> String
+prStr = show

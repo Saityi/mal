@@ -7,13 +7,13 @@ import Lightyear.Strings
 
 import Types
 
-%default partial
+%default partial -- sadface; TODO: Fix totality
 
 malNil : Parser MalSexp
 malNil = token "nil" *> pure MalNil
 
 malBool : Parser MalSexp
-malBool = (token "true" *> (pure $ MalBool True)) <|>| 
+malBool = (token "true" *> (pure $ MalBool True)) <|>|
           (token "false" *> (pure $ MalBool False))
 
 malInt : Parser MalSexp
@@ -66,4 +66,4 @@ mutual
 export
 readString : String -> Either String MalSexp
 readString s = assert_total $ parse malExpr s
--- TODO: Remove assert_total ?
+-- TODO: Remove assert_total

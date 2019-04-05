@@ -4,6 +4,8 @@ import Printer as P
 import Reader as R
 import Types
 
+%default total
+
 read : String -> Either String MalSexp
 read = R.readString
 
@@ -12,12 +14,13 @@ eval v = v
 
 %hide print
 print : Either String MalSexp -> Either String String
-print = map P.printMalSexp
+print = map P.prStr
 
 rep : String -> Either String String
 rep = print . eval . read
 
 %hide repl
+partial -- TODO
 export
 repl : IO ()
 repl = do
@@ -28,5 +31,4 @@ repl = do
             case (rep input) of
                 Left err => putStrLn err
                 Right eval'd => putStrLn eval'd
-            assert_total repl
-            -- TODO: Remove assert_total?
+            repl
