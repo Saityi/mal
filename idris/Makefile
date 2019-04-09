@@ -1,4 +1,4 @@
-SRCS = Reader.idr Printer.idr Types.idr Main.idr step0_repl.idr step1_read_print.idr step2_eval.idr
+SRCS = Reader.idr Printer.idr Types.idr Main.idr step0_repl.idr step1_read_print.idr step2_eval.idr step3_env.idr env.idr
 OTHER_SRCS = Main.idr 
 BINS = $(SRCS:%.idr=%)
 
