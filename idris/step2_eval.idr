@@ -10,26 +10,27 @@ read : String -> Either String MalSexp
 read = R.readString
 
 mutual
+  total
   eval_ast : Environment -> MalSexp -> Either String MalSexp
-  eval_ast env (MalList []) = pure $ MalList []
-  eval_ast env (MalList (x :: xs)) = case (eval env x) of
-    Right x' => case (eval_ast env (MalList xs)) of
-      Right (MalList xs') => pure . MalList $ x' :: xs'
-      Right sexp          => Left $ "wat"
-      Left err            => Left err
-    Left err => Left err
-  eval_ast env sexp = pure sexp
+  eval_ast _   (MalList []) =
+    MalList <$> pure []
+  eval_ast env (MalList (x :: xs)) = assert_total $ -- TODO
+    MalList <$> (traverse (eval env) (x :: xs))
+  eval_ast _   sexp =
+    pure sexp
+
+  %hide apply
+  apply : Environment -> MalSexp -> Either String MalSexp
+  apply env (MalList [(MalSym sym), (MalInt i), (MalInt j)]) =
+    case (envLookup env sym) of
+      Just f => Right . MalInt $ f i j
+      Nothing => Left $ "Undefined symbol " ++ sym
+  apply _ sexp = 
+    pure sexp
 
   eval : Environment -> MalSexp -> Either String MalSexp
-  eval env (MalList []) = pure (MalList [])
-  eval env (MalList (x :: xs)) = case (eval_ast env (MalList (x :: xs))) of
-    Right (MalList [(MalSym sym), (MalInt i), (MalInt j)]) => case (envLookup env sym) of
-      Just f => pure . MalInt $ f i j
-      Nothing => Left $ "Failed to look up symbol " ++ sym ++ " in environment."
-    Right (MalList ((MalSym sym) :: xs)) => Left $ "Wrong number of args for function " ++ sym
-    Right sexp => pure sexp
-    Left err => Left err
-  eval env sexp = pure sexp
+  eval env (MalList xs) = (eval_ast env (MalList xs)) >>= (apply env)
+  eval _   sexp         = pure sexp
 
 %hide print
 print : MalSexp -> Either String String
@@ -37,10 +38,11 @@ print = pure . P.prStr
 
 partial
 defaultEnv : Environment
-defaultEnv = [ ("+", (+))
-             , ("*", (*))
-             , ("-", (-))
-             , ("/", (div))]
+defaultEnv =
+  [ ("+", (+))
+  , ("*", (*))
+  , ("-", (-))
+  , ("/", (div))]
 
 partial
 rep : String -> Either String String

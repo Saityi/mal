@@ -1,5 +1,5 @@
 module Main
-import step3_env
+import step2_eval
 
 main : IO ()
 main = repl
