@@ -74,9 +74,11 @@ add new implementations to mal as efficiently as possible, then you
 SHOULD find the most similar target language implementation and refer
 to it frequently.
 
-If you want a fairly long list of programming languages with an
-approximate measure of popularity, try the [Programming Language
-Popularity Chart](http://langpop.corger.nl/)
+If you want a list of programming languages with an
+approximate measure of popularity try the [RedMonk Programming
+Language
+Rankings](https://redmonk.com/sogrady/2019/03/20/language-rankings-1-19/)
+or the [GitHut 2.0 Project](https://madnight.github.io/githut).
 
 
 ## Getting started
@@ -186,7 +188,7 @@ a textual diff/comparison tool to compare the previous pseudocode step
 with the one you are working on. The architecture diagram images have
 changes from the previous step highlighted in red. There is also
 a concise
-[cheatsheet](http://kanaka.github.io/mal/process/cheatsheet.html) that
+[cheatsheet](http://kanaka.github.io/mal/cheatsheet.html) that
 summarizes the key changes at each step.
 
 If you get completely stuck and are feeling like giving up, then you
@@ -373,8 +375,8 @@ expression support.
   numbers (integers) and symbols. This will allow you to proceed
   through the next couple of steps before you will need to implement
   the other fundamental mal types: nil, true, false, and string. The
-  remaining mal types: keyword, vector, hash-map, and atom do not
-  need to be implemented until step 9 (but can be implemented at any
+  remaining scalar mal type, keyword does not
+  need to be implemented until step A (but can be implemented at any
   point between this step and that). BTW, symbols types are just an
   object that contains a single string name value (some languages have
   symbol types already).
@@ -427,8 +429,9 @@ and each step will give progressively more bang for the buck.
 
 
 * Add support for the other basic data type to your reader and printer
-  functions: string, nil, true, and false. These become mandatory at
-  step 4. When a string is read, the following transformations are
+  functions: string, nil, true, and false. Nil, true, and false
+  become mandatory at step 4, strings at step 6. When a string is read,
+  the following transformations are
   applied: a backslash followed by a doublequote is translated into
   a plain doublequote character, a backslash followed by "n" is
   translated into a newline, and a backslash followed by another
@@ -729,7 +732,7 @@ diff -urp ../process/step3_env.txt ../process/step4_if_fn_do.txt
   of the binds list to the respective element of the `exprs` list.
 
 * Add support to `printer.qx` to print functions values. A string
-  literal like "#<function>" is sufficient.
+  literal like "#\<function>" is sufficient.
 
 * Add the following special forms to `EVAL`:
 
@@ -763,10 +766,10 @@ the apply section of `EVAL`.
 
 Try out the basic functionality you have implemented:
 
-  * `(fn* [a] a)` -> `#<function>`
-  * `( (fn* [a] a) 7)` -> `7`
-  * `( (fn* [a] (+ a 1)) 10)` -> `11`
-  * `( (fn* [a b] (+ a b)) 2 3)` -> `5`
+  * `(fn* (a) a)` -> `#<function>`
+  * `( (fn* (a) a) 7)` -> `7`
+  * `( (fn* (a) (+ a 1)) 10)` -> `11`
+  * `( (fn* (a b) (+ a b)) 2 3)` -> `5`
 
 * Add a new file `core.qx` and define an associative data structure
   `ns` (namespace) that maps symbols to functions. Move the numeric

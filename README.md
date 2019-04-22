@@ -6,21 +6,22 @@
 
 **1. Mal is a Clojure inspired Lisp interpreter**
 
-**2. Mal is implemented in 75 languages**
+**2. Mal is implemented in 75 languages (76 implementations total)**
 
 | Language | Creator |
 | -------- | ------- |
 | [Ada](#ada) | [Chris Moore](https://github.com/zmower) |
-| [GNU awk](#gnu-awk) | [Miutsuru Kariya](https://github.com/kariya-mitsuru) |
+| [Ada #2](#ada2) | [Nicolas Boulenguez](https://github.com/asarhaddon) |
+| [GNU Awk](#gnu-awk) | [Miutsuru Kariya](https://github.com/kariya-mitsuru) |
 | [Bash 4](#bash-4) | [Joel Martin](https://github.com/kanaka)  |
 | [BASIC](#basic-c64-and-qbasic) (C64 &amp; QBasic) | [Joel Martin](https://github.com/kanaka) |
 | [C](#c) | [Joel Martin](https://github.com/kanaka)  |
 | [C++](#c-1) | [Stephen Thirlwall](https://github.com/sdt) |
 | [C#](#c-2) | [Joel Martin](https://github.com/kanaka)  |
 | [ChucK](#chuck) | [Vasilij Schneidermann](https://github.com/wasamasa) |
-| [Common Lisp](#common-lisp) | [Iqbal Ansari](https://github.com/iqbalansari) |
 | [Clojure](#clojure) (Clojure &amp; ClojureScript) | [Joel Martin](https://github.com/kanaka) |
 | [CoffeeScript](#coffeescript) | [Joel Martin](https://github.com/kanaka)  |
+| [Common Lisp](#common-lisp) | [Iqbal Ansari](https://github.com/iqbalansari) |
 | [Crystal](#crystal) | [Linda_pp](https://github.com/rhysd) |
 | [D](#d) | [Dov Murik](https://github.com/dubek) |
 | [Dart](#dart) | [Harry Terkelsen](https://github.com/hterkelsen) |
@@ -33,10 +34,10 @@
 | [Factor](#factor) | [Jordan Lewis](https://github.com/jordanlewis) |
 | [Fantom](#fantom) | [Dov Murik](https://github.com/dubek) |
 | [Forth](#forth) | [Chris Houser](https://github.com/chouser) |
-| [Go](#go) | [Joel Martin](https://github.com/kanaka)  |
-| [Groovy](#groovy) | [Joel Martin](https://github.com/kanaka)  |
 | [GNU Guile](#gnu-guile-21) | [Mu Lei](https://github.com/NalaGinrut) |
 | [GNU Smalltalk](#gnu-smalltalk) | [Vasilij Schneidermann](https://github.com/wasamasa) |
+| [Go](#go) | [Joel Martin](https://github.com/kanaka)  |
+| [Groovy](#groovy) | [Joel Martin](https://github.com/kanaka)  |
 | [Haskell](#haskell) | [Joel Martin](https://github.com/kanaka)  |
 | [Haxe](#haxe-neko-python-c-and-javascript) (Neko, Python, C++, &amp; JS) | [Joel Martin](https://github.com/kanaka) |
 | [Hy](#hy) | [Joel Martin](https://github.com/kanaka)  |
@@ -50,7 +51,7 @@
 | [Lua](#lua) | [Joel Martin](https://github.com/kanaka)  |
 | [GNU Make](#gnu-make-381) | [Joel Martin](https://github.com/kanaka)  |
 | [mal itself](#mal) | [Joel Martin](https://github.com/kanaka)  |
-| [Matlab](#matlab-gnu-octave-and-matlab) (GNU Octave &amp; MATLAB) | [Joel Martin](https://github.com/kanaka) |
+| [MATLAB](#matlab-gnu-octave-and-matlab) (GNU Octave &amp; MATLAB) | [Joel Martin](https://github.com/kanaka) |
 | [miniMAL](#minimal) ([Repo](https://github.com/kanaka/miniMAL), [Demo](https://kanaka.github.io/miniMAL/)) | [Joel Martin](https://github.com/kanaka) |
 | [NASM](#nasm) | [Ben Dudson](https://github.com/bendudson) |
 | [Nim](#nim-0170) | [Dennis Felsing](https://github.com/def-) |
@@ -63,7 +64,7 @@
 | [Picolisp](#picolisp) | [Vasilij Schneidermann](https://github.com/wasamasa) |
 | [PL/pgSQL](#plpgsql-postgres-sql-procedural-language) (Postgres) | [Joel Martin](https://github.com/kanaka) |
 | [PL/SQL](#plsql-oracle-sql-procedural-language) (Oracle) | [Joel Martin](https://github.com/kanaka) |
-| [Postscript](#postscript-level-23) | [Joel Martin](https://github.com/kanaka)  |
+| [PostScript](#postscript-level-23) | [Joel Martin](https://github.com/kanaka)  |
 | [PowerShell](#powershell) | [Joel Martin](https://github.com/kanaka)  |
 | [Python](#python-2x-and-3x) (2.X &amp; 3.X) | [Joel Martin](https://github.com/kanaka) |
 | [RPython](#rpython) | [Joel Martin](https://github.com/kanaka)  |
@@ -75,7 +76,7 @@
 | [Scala](#scala) | [Joel Martin](https://github.com/kanaka)  |
 | [Scheme (R7RS)](#scheme-r7rs) | [Vasilij Schneidermann](https://github.com/wasamasa) |
 | [Skew](#skew) | [Dov Murik](https://github.com/dubek) |
-| [Swift](#swift) | [Keith Rollin](https://github.com/keith-rollin) |
+| [Swift 2](#swift) | [Keith Rollin](https://github.com/keith-rollin) |
 | [Swift 3](#swift-3) | [Joel Martin](https://github.com/kanaka)  |
 | [Swift 4](#swift-4) | [陆遥](https://github.com/LispLY)  |
 | [Tcl](#tcl-86) | [Dov Murik](https://github.com/dubek) |
@@ -156,6 +157,28 @@ make DOCKERIZE=1 "repl^IMPL^stepX"
 make DOCKERIZE=1 "repl^IMPL"
 ```
 
+## External Implementations
+
+The following implementations are maintained as separate projects:
+
+### HolyC
+
+* [by Alexander Bagnalla](https://github.com/bagnalla/holyc_mal)
+
+### Rust
+
+* [by Tim Morgan](https://github.com/seven1m/mal-rust)
+* [by vi](https://github.com/vi/mal-rust-vi) - using [Pest](https://pest.rs/) grammar, not using typical Mal infrastructure (cargo-ized steps and built-in converted tests).
+
+
+## Other mal Projects
+
+ * [malc](https://github.com/dubek/malc) - Mal (Make A Lisp) compiler. Compiles a Mal program to LLVM assembly language, then binary.
+ * [malcc](https://git.sr.ht/~tim/malcc) (@seven1m) - malcc is an incremental compiler implementation for the Mal language. It uses the Tiny C Compiler as the compiler backend and has full support for the Mal language, including macros, tail-call elimination, and even run-time eval. ["I Built a Lisp Compiler"](https://mpov.timmorgan.org/i-built-a-lisp-compiler/) post about the process.
+ * [frock](https://github.com/chr15m/frock) - Clojure-flavoured PHP. Uses mal/php to run programs.
+
+
+## Implementation Details
 
 ### Ada
 
@@ -163,6 +186,17 @@ The Ada implementation was developed with GNAT 4.9 on debian. It also
 compiles unchanged on windows if you have windows versions of git,
 GNAT and (optionally) make.  There are no external dependencies
 (readline not implemented).
+
+```
+cd ada
+make
+./stepX_YYY
+```
+
+### Ada.2
+
+The second Ada implementation was developed with GNAT 8 and links with
+the GNU readline library.
 
 ```
 cd ada
@@ -263,19 +297,6 @@ cd chuck
 ./run
 ```
 
-### Common Lisp
-
-The implementation has been tested with SBCL, CCL, CMUCL, GNU CLISP, ECL and
-Allegro CL on Ubuntu 16.04 and Ubuntu 12.04, see
-the [README](common-lisp/README.org) for more details. Provided you have the
-dependencies mentioned installed, do the following to run the implementation
-
-```
-cd common-lisp
-make
-./run
-```
-
 ### Clojure
 
 For the most part the Clojure implementation requires Clojure 1.5,
@@ -292,6 +313,19 @@ lein with-profile +stepX trampoline run
 sudo npm install -g coffee-script
 cd coffee
 coffee ./stepX_YYY
+```
+
+### Common Lisp
+
+The implementation has been tested with SBCL, CCL, CMUCL, GNU CLISP, ECL and
+Allegro CL on Ubuntu 16.04 and Ubuntu 12.04, see
+the [README](common-lisp/README.org) for more details. Provided you have the
+dependencies mentioned installed, do the following to run the implementation
+
+```
+cd common-lisp
+make
+./run
 ```
 
 ### Crystal
@@ -427,6 +461,22 @@ cd forth
 gforth stepX_YYY.fs
 ```
 
+### GNU Guile 2.1+
+
+```
+cd guile
+guile -L ./ stepX_YYY.scm
+```
+
+### GNU Smalltalk
+
+The Smalltalk implementation of mal has been tested with GNU Smalltalk 3.2.91.
+
+```
+cd gnu-smalltalk
+./run
+```
+
 ### Go
 
 The Go implementation of mal requires that go is installed on on the
@@ -448,22 +498,6 @@ tested with Groovy 1.8.6.
 cd groovy
 make
 groovy ./stepX_YYY.groovy
-```
-
-### GNU Guile 2.1+
-
-```
-cd guile
-guile -L ./ stepX_YYY.scm
-```
-
-### GNU Smalltalk
-
-The Smalltalk implementation of mal has been tested with GNU Smalltalk 3.2.91.
-
-```
-cd gnu-smalltalk
-./run
 ```
 
 ### Haskell
@@ -660,7 +694,7 @@ make
 ./stepX_YYY
 ```
 
-### MatLab (GNU Octave and MATLAB)
+### MATLAB (GNU Octave and MATLAB)
 
 The MatLab implementation has been tested with GNU Octave 4.2.1.
 It has also been tested with MATLAB version R2014a on Linux. Note that
@@ -998,13 +1032,30 @@ mono ./stepX_YYY.exe
 
 The WebAssembly implementation is written in
 [Wam](https://github.com/kanaka/wam) (WebAssembly Macro language) and
-runs under the [wac/wace](https://github.com/kanaka/wac) WebAssembly
-runtime.
+runs under several different non-web embeddings (runtimes):
+node,
+[wasmtime](https://github.com/CraneStation/wasmtime),
+[wax](https://github.com/kanaka/wac),
+[wace](https://github.com/kanaka/wac),
+[warpy](https://github.com/kanaka/warpy).
 
 ```
 cd wasm
-make
+# node
+make wasm_MODE=node
+./run.js ./stepX_YYY.wasm
+# wasmtime
+make wasm_MODE=wasmtime
+wasmtime --dir=./ --dir=../ --dir=/ ./stepX_YYY.wasm
+# wax
+make wasm_MODE=wax
 wace ./stepX_YYY.wasm
+# wace
+make wasm_MODE=wace_libc
+wace ./stepX_YYY.wasm
+# warpy
+make wasm_MODE=warpy
+warpy --argv --memory-pages 256 ./stepX_YYY.wasm
 ```
 
 ### Yorick
@@ -1152,15 +1203,6 @@ make "stats^IMPL"
 make "stats^js"
 ```
 
-* To report line and bytes statistics for general Lisp code (env, core
-  and stepA):
-```
-make "stats-lisp^IMPL"
-
-# e.g.
-make "stats-lisp^js"
-```
-
 ## Dockerized testing
 
 Every implementation directory contains a Dockerfile to create
@@ -1193,26 +1235,6 @@ make "docker-build^IMPL"
   out. These dependencies are downloaded to dot-files in the /mal
   directory so they will persist between runs.
 
-
-## External Implementations
-
-The following implementations are maintained as separate projects:
-
-### HolyC
-
-* [by Alexander Bagnalla](https://github.com/bagnalla/holyc_mal)
-
-### Rust
-
-* [by Tim Morgan](https://github.com/seven1m/mal-rust)
-* [by vi](https://github.com/vi/mal-rust-vi) - using [Pest](https://pest.rs/) grammar, not using typical Mal infrastructure (cargo-ized steps and built-in converted tests).
-
-
-## Other mal Projects
-
- * [malc](https://github.com/dubek/malc) - Mal (Make A Lisp) compiler. Compiles a Mal program to LLVM assembly language, then binary.
- * [malcc](https://git.sr.ht/~tim/malcc) (@seven1m) - malcc is an incremental compiler implementation for the Mal language. It uses the Tiny C Compiler as the compiler backend and has full support for the Mal language, including macros, tail-call elimination, and even run-time eval.
- * [frock](https://github.com/chr15m/frock) - Clojure-flavoured PHP. Uses mal/php to run programs.
 
 ## License
 
