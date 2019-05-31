@@ -134,6 +134,7 @@ fn eval(mut ast: MalVal, mut env: Env) -> MalRet {
 
   ret = match ast.clone() {
     List(l,_) => {
+      if l.len() == 0 { return Ok(ast); }
       match macroexpand(ast.clone(), &env) {
         (true, Ok(new_ast)) => {
           ast = new_ast;
@@ -288,7 +289,7 @@ fn main() {
   // `()` can be used when no completer is required
   let mut rl = Editor::<()>::new();
   if rl.load_history(".mal-history").is_err() {
-      println!("No previous history.");
+      eprintln!("No previous history.");
   }
 
   // core.rs: defined using rust

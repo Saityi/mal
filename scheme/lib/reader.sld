@@ -164,10 +164,15 @@
      ((string->number token)
       => mal-number)
      ((char=? (string-ref token 0) #\")
-      (let ((last (- (string-length token) 1)))
-        (if (char=? (string-ref token last) #\")
-            (mal-string (call-with-input-string token read))
-            (error (str "expected '" #\" "', got EOF")))))
+      (guard
+       (ex ((cond-expand
+             ;; HACK: https://github.com/ashinn/chibi-scheme/pull/540
+             (chibi
+              (error-object? ex))
+             (else
+              (read-error? ex)))
+            (error (str "expected '" #\" "', got EOF"))))
+       (mal-string (call-with-input-string token read))))
      ((char=? (string-ref token 0) #\:)
       (mal-keyword (string->symbol (string-copy token 1))))
      (else

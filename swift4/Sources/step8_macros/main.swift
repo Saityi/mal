@@ -48,6 +48,7 @@ func EVAL(_ anAst: MalData, env anEnv: Env) throws -> MalData {
     while true {
         switch ast.dataType {
         case .List:
+            if (ast as! [MalData]).isEmpty { return ast }
             ast = try macroexpand(ast, env: env)
             guard let list = ast as? [MalData] else { return try eval_ast(ast, env: env) }
             guard !list.isEmpty else { return list }
@@ -85,7 +86,7 @@ func EVAL(_ anAst: MalData, env anEnv: Env) throws -> MalData {
                         ast = list[2]
                     }
                     continue
-                case "fn*": 
+                case "fn*":
                     let fn = {(params: [MalData]) -> MalData in
                         let newEnv = Env(binds: (list[1].listForm as! [Symbol]), exprs: params, outer: env)
                         return try EVAL(list[2], env: newEnv)
@@ -164,7 +165,6 @@ repl_env.set([], forKey: Symbol("*ARGV*"))
 
 try rep("(def! not (fn* (a) (if a false true)))", env: repl_env)
 try rep("(def! load-file (fn* (f) (eval (read-string (str \"(do \" (slurp f) \")\")))))", env: repl_env)
-try rep("(def! load-file (fn* (f) (eval (read-string (str \"(do \" (slurp f) \")\")))))", env: repl_env)
 try rep("(defmacro! cond (fn* (& xs) (if (> (count xs) 0) (list 'if (first xs) (if (> (count xs) 1) (nth xs 1) (throw \"odd number of forms to cond\")) (cons 'cond (rest (rest xs)))))))", env: repl_env)
 try rep("(defmacro! or (fn* (& xs) (if (empty? xs) nil (if (= 1 (count xs)) (first xs) `(let* (or_FIXME ~(first xs)) (if or_FIXME or_FIXME (or ~@(rest xs))))))))", env: repl_env)
 
@@ -185,5 +185,7 @@ while true {
         } catch let error as MalError {
             print(error.info())
         }
+    } else {
+        exit(0);
     }
 }

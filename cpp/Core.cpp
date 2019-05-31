@@ -100,6 +100,33 @@ BUILTIN("<=")
     return mal::boolean(lhs->value() <= rhs->value());
 }
 
+BUILTIN(">=")
+{
+    CHECK_ARGS_IS(2);
+    ARG(malInteger, lhs);
+    ARG(malInteger, rhs);
+
+    return mal::boolean(lhs->value() >= rhs->value());
+}
+
+BUILTIN("<")
+{
+    CHECK_ARGS_IS(2);
+    ARG(malInteger, lhs);
+    ARG(malInteger, rhs);
+
+    return mal::boolean(lhs->value() < rhs->value());
+}
+
+BUILTIN(">")
+{
+    CHECK_ARGS_IS(2);
+    ARG(malInteger, lhs);
+    ARG(malInteger, rhs);
+
+    return mal::boolean(lhs->value() > rhs->value());
+}
+
 BUILTIN("=")
 {
     CHECK_ARGS_IS(2);
@@ -284,6 +311,11 @@ BUILTIN("keyword")
     return mal::keyword(":" + token->value());
 }
 
+BUILTIN("list")
+{
+    return mal::list(argsBegin, argsEnd);
+}
+
 BUILTIN("macro?")
 {
     CHECK_ARGS_IS(1);
@@ -291,6 +323,22 @@ BUILTIN("macro?")
     // Macros are implemented as lambdas, with a special flag.
     const malLambda* lambda = DYNAMIC_CAST(malLambda, *argsBegin);
     return mal::boolean((lambda != NULL) && lambda->isMacro());
+}
+
+BUILTIN("map")
+{
+    CHECK_ARGS_IS(2);
+    malValuePtr op = *argsBegin++; // this gets checked in APPLY
+    ARG(malSequence, source);
+
+    const int length = source->count();
+    malValueVec* items = new malValueVec(length);
+    auto it = source->begin();
+    for (int i = 0; i < length; i++) {
+      items->at(i) = APPLY(op, it+i, it+i+1);
+    }
+
+    return  mal::list(items);
 }
 
 BUILTIN("meta")

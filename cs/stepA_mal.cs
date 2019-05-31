@@ -167,7 +167,7 @@ namespace Mal {
                             if (e is Mal.types.MalException) {
                                 exc = ((Mal.types.MalException)e).getValue();
                             } else {
-                                exc = new MalString(e.StackTrace);
+                                exc = new MalString(e.Message);
                             }
                             return EVAL(((MalList)a2)[2],
                                         new Env(env, ((MalList)a2).slice(1,2),
@@ -249,8 +249,8 @@ namespace Mal {
             RE("(def! not (fn* (a) (if a false true)))");
             RE("(def! load-file (fn* (f) (eval (read-string (str \"(do \" (slurp f) \")\")))))");
             RE("(defmacro! cond (fn* (& xs) (if (> (count xs) 0) (list 'if (first xs) (if (> (count xs) 1) (nth xs 1) (throw \"odd number of forms to cond\")) (cons 'cond (rest (rest xs)))))))");
-            RE("(def! *gensym-counter* (atom 0))");
-            RE("(def! gensym (fn* [] (symbol (str \"G__\" (swap! *gensym-counter* (fn* [x] (+ 1 x)))))))");
+            RE("(def! inc (fn* [x] (+ x 1)))");
+            RE("(def! gensym (let* [counter (atom 0)] (fn* [] (symbol (str \"G__\" (swap! counter inc))))))");
             RE("(defmacro! or (fn* (& xs) (if (empty? xs) nil (if (= 1 (count xs)) (first xs) (let* (condvar (gensym)) `(let* (~condvar ~(first xs)) (if ~condvar ~condvar (or ~@(rest xs)))))))))");
 
             if (args.Length > fileIdx) {

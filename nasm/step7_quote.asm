@@ -66,7 +66,10 @@ section .data
         static_symbol cons_symbol, 'cons'
         
 ;; Startup string. This is evaluated on startup
-        static mal_startup_string, db "(do (def! not (fn* (a) (if a false true))) (def! load-file (fn* (f) (eval (read-string (str ",34,"(do",34,"  (slurp f) ",34,")",34," ))))) )"
+        static mal_startup_string, db "(do \
+(def! not (fn* (a) (if a false true))) \
+(def! load-file (fn* (f) (eval (read-string (str ",34,"(do",34,"  (slurp f) ",34,")",34," ))))) \
+)"
 
 ;; Command to run, appending the name of the script to run
         static run_script_string, db "(load-file ",34
@@ -551,7 +554,7 @@ eval:
         ; Check type
         mov al, BYTE [rsi]
         cmp al, maltype_empty_list
-        je .return_nil
+        je .empty_list           ; empty list, return unchanged
 
         and al, container_mask
         cmp al, container_list
@@ -1452,7 +1455,10 @@ eval:
         print_str_mac eval_list_not_function
         pop rsi
         jmp error_throw
-        
+
+.empty_list:
+        mov rax, rsi
+        jmp .return
 
 ;; Applies a user-defined function
 ;;

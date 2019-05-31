@@ -40,7 +40,9 @@
 (defn macroexpand [ast env]
   (loop [ast ast]
     (if (is-macro-call ast env)
-      (let [mac (env/env-get env (first ast))]
+      ;; Get original unadorned function because ClojureScript (1.10)
+      ;; limits functions with meta on them to arity 20
+      (let [mac (:orig (meta (env/env-get env (first ast))))]
         (recur (apply mac (rest ast))))
       ast)))
 
@@ -90,9 +92,12 @@
               (recur (quasiquote a1) env)
 
               'defmacro!
-              (let [func (with-meta (EVAL a2 env)
-                                    {:ismacro true})]
-                (env/env-set env a1 func))
+              (let [func (EVAL a2 env)
+                    ;; Preserve unadorned function to workaround
+                    ;; ClojureScript function-with-meta arity limit
+                    mac (with-meta func {:orig (:orig (meta func))
+                                         :ismacro true})]
+                (env/env-set env a1 mac))
 
               'macroexpand
               (macroexpand a1 env)
@@ -135,12 +140,16 @@
                   (recur a2 env)))
 
               'fn*
-              (with-meta
-                (fn [& args]
-                  (EVAL a2 (env/env env a1 (or args '()))))
-                {:expression a2
-                 :environment env
-                 :parameters a1})
+              (let [func (fn [& args]
+                           (EVAL a2 (env/env env a1 (or args '()))))]
+                (with-meta
+                  func
+                  ;; Preserve unadorned function to workaround
+                  ;; ClojureScript function-with-meta arity limit
+                  {:orig func
+                   :expression a2
+                   :environment env
+                   :parameters a1}))
 
               ;; apply
               (let [el (eval-ast ast env)
@@ -171,8 +180,8 @@
 (rep "(def! not (fn* [a] (if a false true)))")
 (rep "(def! load-file (fn* [f] (eval (read-string (str \"(do \" (slurp f) \")\")))))")
 (rep "(defmacro! cond (fn* (& xs) (if (> (count xs) 0) (list 'if (first xs) (if (> (count xs) 1) (nth xs 1) (throw \"odd number of forms to cond\")) (cons 'cond (rest (rest xs)))))))")
-(rep "(def! *gensym-counter* (atom 0))")
-(rep "(def! gensym (fn* [] (symbol (str \"G__\" (swap! *gensym-counter* (fn* [x] (+ 1 x)))))))")
+(rep "(def! inc (fn* [x] (+ x 1)))")
+(rep "(def! gensym (let* [counter (atom 0)] (fn* [] (symbol (str \"G__\" (swap! counter inc))))))")
 (rep "(defmacro! or (fn* (& xs) (if (empty? xs) nil (if (= 1 (count xs)) (first xs) (let* (condvar (gensym)) `(let* (~condvar ~(first xs)) (if ~condvar ~condvar (or ~@(rest xs)))))))))")
 
 ;; repl loop

@@ -67,7 +67,7 @@ func PRINT(_ input: MalData) -> String {
 }
 
 @discardableResult func rep(_ input: String, env: Env) throws -> String {
-    
+
     return try PRINT(EVAL(READ(input), env: env))
 }
 
@@ -104,5 +104,7 @@ while true {
         } catch let error as MalError {
             print(error.info())
         }
+    } else {
+        exit(0);
     }
 }

@@ -109,6 +109,7 @@ public class stepA_mal {
         if (!orig_ast.list_Q()) {
             return eval_ast(orig_ast, env);
         }
+        if (((MalList)orig_ast).size() == 0) { return orig_ast; }
 
         // apply list
         MalVal expanded = macroexpand(orig_ast, env);
@@ -259,8 +260,8 @@ public class stepA_mal {
         RE(repl_env, "(def! not (fn* (a) (if a false true)))");
         RE(repl_env, "(def! load-file (fn* (f) (eval (read-string (str \"(do \" (slurp f) \")\")))))");
         RE(repl_env, "(defmacro! cond (fn* (& xs) (if (> (count xs) 0) (list 'if (first xs) (if (> (count xs) 1) (nth xs 1) (throw \"odd number of forms to cond\")) (cons 'cond (rest (rest xs)))))))");
-        RE(repl_env, "(def! *gensym-counter* (atom 0))");
-        RE(repl_env, "(def! gensym (fn* [] (symbol (str \"G__\" (swap! *gensym-counter* (fn* [x] (+ 1 x)))))))");
+        RE(repl_env, "(def! inc (fn* [x] (+ x 1)))");
+        RE(repl_env, "(def! gensym (let* [counter (atom 0)] (fn* [] (symbol (str \"G__\" (swap! counter inc))))))");
         RE(repl_env, "(defmacro! or (fn* (& xs) (if (empty? xs) nil (if (= 1 (count xs)) (first xs) (let* (condvar (gensym)) `(let* (~condvar ~(first xs)) (if ~condvar ~condvar (or ~@(rest xs)))))))))");
         
         Integer fileIdx = 0;

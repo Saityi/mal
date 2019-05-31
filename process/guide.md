@@ -1133,7 +1133,7 @@ diff -urp ../process/step6_file.txt ../process/step7_quote.txt
 * Copy `step6_file.qx` to `step7_quote.qx`.
 
 * Before implementing the quoting forms, you will need to implement
-* some supporting functions in the core namespace:
+  some supporting functions in the core namespace:
   * `cons`: this function takes a list as its second
     parameter and returns a new list that has the first argument
     prepended to it.
@@ -1182,7 +1182,7 @@ make "test^quux^step7"
 
 Quoting is one of the more mundane functions available in mal, but do
 not let that discourage you. Your mal implementation is almost
-complete, and quoting sets the stage for the next very exiting step:
+complete, and quoting sets the stage for the next very exciting step:
 macros.
 
 
@@ -1455,6 +1455,9 @@ self-hosting.
   * `vector?`: takes a single argument and returns true (mal true
     value) if the argument is a vector, otherwise returns false (mal
     false value).
+  * `sequential?`: takes a single argument and returns true (mal true
+    value) if it is a list or a vector, otherwise returns false (mal
+    false value).
   * `hash-map`: takes a variable but even number of arguments and
     returns a new mal hash-map value with keys from the odd arguments
     and values from the even arguments respectively. This is basically
@@ -1482,9 +1485,6 @@ self-hosting.
     all the keys in the hash-map.
   * `vals`: takes a hash-map and returns a list (mal list value) of
     all the values in the hash-map.
-  * `sequential?`: takes a single arguments and returns true (mal true
-    value) if it is a list or a vector, otherwise returns false (mal
-    false value).
 
 
 <a name="stepA"></a>
@@ -1537,6 +1537,10 @@ diff -urp ../process/step9_try.txt ../process/stepA_mal.txt
     result of reading the next next form (2nd argument) (`read_form`) and the
     next form (1st argument) in that order
     (metadata comes first with the ^ macro and the function second).
+  * If you implemented as `defmacro!` to mutate an existing function
+    without copying it, you can now use the function copying mechanism
+    used for metadata to make functions immutable even in the
+    defmacro! case...
 
 * Add a new "\*host-language\*" (symbol) entry to your REPL
   environment. The value of this entry should be a mal string
@@ -1547,6 +1551,11 @@ diff -urp ../process/step9_try.txt ../process/stepA_mal.txt
   to print a startup header:
   "(println (str \"Mal [\" \*host-language\* \"]\"))".
 
+* Ensure that the REPL environment contains definitions for `time-ms`,
+  `string?`, `number?`, `seq`, and `conj`.  It doesn't really matter
+  what they do at this stage: they just need to be defined.  Making
+  them functions that raise a "not implemented" exception would be
+  fine.
 
 Now go to the top level, run the step A tests:
 ```
@@ -1615,9 +1624,9 @@ definition and use `rep` to define the new counter, `gensym` function
 and the clean `or` macro. Here are the string arguments you need to
 pass to `rep`:
 ```
-"(def! *gensym-counter* (atom 0))"
+"(def! inc (fn* [x] (+ x 1)))"
 
-"(def! gensym (fn* [] (symbol (str \"G__\" (swap! *gensym-counter* (fn* [x] (+ 1 x)))))))"
+"(def! gensym (let* [counter (atom 0)] (fn* [] (symbol (str \"G__\" (swap! counter inc))))))"
 
 "(defmacro! or (fn* (& xs) (if (empty? xs) nil (if (= 1 (count xs)) (first xs) (let* (condvar (gensym)) `(let* (~condvar ~(first xs)) (if ~condvar ~condvar (or ~@(rest xs)))))))))"
 ```
@@ -1630,7 +1639,7 @@ For extra information read [Peter Seibel's thorough discussion about
 
 * Add metadata support to other composite data types (lists, vectors
   and hash-maps), and to native functions.
-* Add the following new core functions:
+* Add the following new core functions (and remove any stub versions):
   * `time-ms`: takes no arguments and returns the number of
     milliseconds since epoch (00:00:00 UTC January 1, 1970), or, if
     not possible, since another point in time (`time-ms` is usually

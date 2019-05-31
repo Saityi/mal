@@ -121,6 +121,9 @@ function evalMal(ast: MalType, env: Env): MalType {
         if (ast.type !== Node.List) {
             return evalAST(ast, env);
         }
+        if (ast.list.length === 0) {
+            return ast;
+        }
 
         ast = macroexpand(ast, env);
         if (!isSeq(ast)) {
@@ -299,8 +302,8 @@ rep(`(def! *host-language* "TypeScript")`);
 rep("(def! not (fn* (a) (if a false true)))");
 rep(`(def! load-file (fn* (f) (eval (read-string (str "(do " (slurp f) ")")))))`);
 rep(`(defmacro! cond (fn* (& xs) (if (> (count xs) 0) (list 'if (first xs) (if (> (count xs) 1) (nth xs 1) (throw "odd number of forms to cond")) (cons 'cond (rest (rest xs)))))))`);
-rep("(def! *gensym-counter* (atom 0))");
-rep("(def! gensym (fn* [] (symbol (str \"G__\" (swap! *gensym-counter* (fn* [x] (+ 1 x)))))))");
+rep("(def! inc (fn* [x] (+ x 1)))");
+rep("(def! gensym (let* [counter (atom 0)] (fn* [] (symbol (str \"G__\" (swap! counter inc))))))");
 rep("(defmacro! or (fn* (& xs) (if (empty? xs) nil (if (= 1 (count xs)) (first xs) (let* (condvar (gensym)) `(let* (~condvar ~(first xs)) (if ~condvar ~condvar (or ~@(rest xs)))))))))");
 
 if (typeof process !== "undefined" && 2 < process.argv.length) {

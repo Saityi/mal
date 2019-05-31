@@ -6,7 +6,7 @@
 
 **1. Mal is a Clojure inspired Lisp interpreter**
 
-**2. Mal is implemented in 75 languages (76 implementations total)**
+**2. Mal is implemented in 77 languages (78 different implementations and 99 runtime modes)**
 
 | Language | Creator |
 | -------- | ------- |
@@ -15,6 +15,7 @@
 | [GNU Awk](#gnu-awk) | [Miutsuru Kariya](https://github.com/kariya-mitsuru) |
 | [Bash 4](#bash-4) | [Joel Martin](https://github.com/kanaka)  |
 | [BASIC](#basic-c64-and-qbasic) (C64 &amp; QBasic) | [Joel Martin](https://github.com/kanaka) |
+| [BBC BASIC V](#bbc-basic-v) | [Ben Harris](https://github.com/bjh21) |
 | [C](#c) | [Joel Martin](https://github.com/kanaka)  |
 | [C++](#c-1) | [Stephen Thirlwall](https://github.com/sdt) |
 | [C#](#c-2) | [Joel Martin](https://github.com/kanaka)  |
@@ -81,6 +82,7 @@
 | [Swift 4](#swift-4) | [陆遥](https://github.com/LispLY)  |
 | [Tcl](#tcl-86) | [Dov Murik](https://github.com/dubek) |
 | [TypeScript](#typescript) | [Masahiro Wakame](https://github.com/vvakame) |
+| [Vala](#vala) | [Simon Tatham](https://github.com/sgtatham) |
 | [VHDL](#vhdl) | [Dov Murik](https://github.com/dubek) |
 | [Vimscript](#vimscript) | [Dov Murik](https://github.com/dubek) |
 | [Visual Basic.NET](#visual-basicnet) | [Joel Martin](https://github.com/kanaka)  |
@@ -248,6 +250,22 @@ make MODE=qbasic stepX_YYY.bas
 Thanks to [Steven Syrek](https://github.com/sjsyrek) for the original
 inspiration for this implementation.
 
+### BBC BASIC V
+
+The BBC BASIC V implementation can run in the Brandy interpreter:
+
+```
+cd bbc-basic
+brandy -quit stepX_YYY.bbc
+```
+
+Or in ARM BBC BASIC V under RISC OS 3 or later:
+
+```
+*Dir bbc-basic.riscos
+*Run setup
+*Run stepX_YYY
+```
 
 ### C
 
@@ -995,6 +1013,18 @@ It has been tested with Node.js v6.
 cd ts
 make
 node ./stepX_YYY.js
+```
+
+### Vala
+
+The Vala implementation of mal has been tested with the Vala 0.40.8
+compiler. You will need to install `valac` and `libreadline-dev` or
+equivalent.
+
+```
+cd vala
+make
+./stepX_YYY
 ```
 
 ### VHDL

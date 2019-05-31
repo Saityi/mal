@@ -143,7 +143,10 @@ module Mal
     # 'next' in 'do...end' has a bug in crystal 0.7.1
     # https://github.com/manastech/crystal/issues/659
     while true
-      return eval_ast(ast, env) unless ast.unwrap.is_a? Mal::List
+      list = ast.unwrap
+
+      return eval_ast(ast, env) unless list.is_a? Mal::List
+      return ast if list.empty?
 
       ast = macroexpand(ast, env)
 
@@ -251,8 +254,8 @@ REPL_ENV.set("eval", Mal::Type.new ->(args : Array(Mal::Type)) { Mal.eval(args[0
 Mal.rep "(def! not (fn* (a) (if a false true)))"
 Mal.rep "(def! load-file (fn* (f) (eval (read-string (str \"(do \" (slurp f) \")\")))))"
 Mal.rep "(defmacro! cond (fn* (& xs) (if (> (count xs) 0) (list 'if (first xs) (if (> (count xs) 1) (nth xs 1) (throw \"odd number of forms to cond\")) (cons 'cond (rest (rest xs)))))))"
-Mal.rep "(def! *gensym-counter* (atom 0))"
-Mal.rep "(def! gensym (fn* [] (symbol (str \"G__\" (swap! *gensym-counter* (fn* [x] (+ 1 x)))))))"
+Mal.rep "(def! inc (fn* [x] (+ x 1)))"
+Mal.rep "(def! gensym (let* [counter (atom 0)] (fn* [] (symbol (str \"G__\" (swap! counter inc))))))"
 Mal.rep "(defmacro! or (fn* (& xs) (if (empty? xs) nil (if (= 1 (count xs)) (first xs) (let* (condvar (gensym)) `(let* (~condvar ~(first xs)) (if ~condvar ~condvar (or ~@(rest xs)))))))))"
 Mal.rep("(def! *host-language* \"crystal\")")
 

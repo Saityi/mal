@@ -1,4 +1,4 @@
-FROM ubuntu:vivid
+FROM ubuntu:bionic
 MAINTAINER Joel Martin <github@martintribe.org>
 
 ##########################################################
@@ -21,6 +21,11 @@ WORKDIR /mal
 # Specific implementation requirements
 ##########################################################
 
-RUN apt-get -y install gdc
+RUN apt-get -y install gcc gdc ldc gpg wget
+
+RUN wget https://dlang.org/install.sh -q -O install.sh && \
+    bash install.sh -p /usr/local/dlang && \
+    chmod 755 /usr/local/dlang/dmd* && \
+    ln -sf /usr/local/dlang/dmd-*/linux/bin64/dmd /usr/bin/dmd
 
 ENV HOME /mal
