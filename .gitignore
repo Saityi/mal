@@ -20,3 +20,5 @@ node_modules
 logs
 old
 tmp/
+MAlonzo/*
+*.agdai
